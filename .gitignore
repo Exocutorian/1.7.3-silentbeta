@@ -1,0 +1,18 @@
+# Downloaded by RetroMCP `setup b1.7.3` — regenerate instead of committing
+/jars/
+/libraries/
+
+# Build output and regenerable data (`decompile` recreates these)
+minecraft/bin/
+minecraft/jars/
+minecraft/md5/
+minecraft/src_original/
+minecraft/game/
+minecraft_server/bin/
+minecraft_server/jars/
+minecraft_server/md5/
+minecraft_server/src_original/
+minecraft_server/game/
+
+# RetroMCP tool jar, if dropped into the workspace
+RetroMCP*.jar
