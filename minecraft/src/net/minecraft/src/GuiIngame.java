@@ -10,6 +10,8 @@ import org.lwjgl.opengl.GL12;
 
 public class GuiIngame extends Gui {
 	private static RenderItem itemRenderer = new RenderItem();
+	private ItemStack highlightItem = null;
+	private int highlightTicks = 0;
 	private List chatMessageList = new ArrayList();
 	private Random rand = new Random();
 	private Minecraft mc;
@@ -52,6 +54,10 @@ public class GuiIngame extends Gui {
 		this.zLevel = -90.0F;
 		this.drawTexturedModalRect(var6 / 2 - 91, var7 - 22, 0, 0, 182, 22);
 		this.drawTexturedModalRect(var6 / 2 - 91 - 1 + var11.currentItem * 20, var7 - 22 - 1, 0, 22, 24, 22);
+		if(var11.offHandInventory[0] != null) {
+			this.drawTexturedModalRect(var6 / 2 - 91 - 26, var7 - 22, 0, 0, 11, 22);
+			this.drawTexturedModalRect(var6 / 2 - 91 - 26 + 11, var7 - 22, 171, 0, 11, 22);
+		}
 		GL11.glBindTexture(GL11.GL_TEXTURE_2D, this.mc.renderEngine.getTexture("/gui/icons.png"));
 		GL11.glEnable(GL11.GL_BLEND);
 		GL11.glBlendFunc(GL11.GL_ONE_MINUS_DST_COLOR, GL11.GL_ONE_MINUS_SRC_COLOR);
@@ -146,8 +152,18 @@ public class GuiIngame extends Gui {
 			this.renderInventorySlot(var15, var16, var17, var1);
 		}
 
+		if(var11.offHandInventory[0] != null) {
+			itemRenderer.renderItemIntoGUI(this.mc.fontRenderer, this.mc.renderEngine, var11.offHandInventory[0], var6 / 2 - 91 - 26 + 3, var7 - 16 - 3);
+			itemRenderer.renderItemOverlayIntoGUI(this.mc.fontRenderer, this.mc.renderEngine, var11.offHandInventory[0], var6 / 2 - 91 - 26 + 3, var7 - 16 - 3);
+		}
+
 		RenderHelper.disableStandardItemLighting();
 		GL11.glDisable(GL12.GL_RESCALE_NORMAL);
+
+		if(this.highlightTicks > 0 && this.highlightItem != null) {
+			String highlightName = betaengine.client.ItemNames.display(this.highlightItem);
+			this.mc.fontRenderer.drawStringWithShadow(highlightName, (var6 - this.mc.fontRenderer.getStringWidth(highlightName)) / 2, var7 - 45, 16777215);
+		}
 		if(this.mc.thePlayer.func_22060_M() > 0) {
 			GL11.glDisable(GL11.GL_DEPTH_TEST);
 			GL11.glDisable(GL11.GL_ALPHA_TEST);
@@ -362,6 +378,17 @@ public class GuiIngame extends Gui {
 	}
 
 	public void updateTick() {
+		ItemStack currentHeld = this.mc.thePlayer == null ? null : this.mc.thePlayer.inventory.getCurrentItem();
+		if(currentHeld == null) {
+			this.highlightItem = null;
+			this.highlightTicks = 0;
+		} else if(this.highlightItem == null || currentHeld.itemID != this.highlightItem.itemID || currentHeld.getItemDamage() != this.highlightItem.getItemDamage()) {
+			this.highlightItem = currentHeld;
+			this.highlightTicks = 45;
+		} else if(this.highlightTicks > 0) {
+			--this.highlightTicks;
+		}
+
 		if(this.recordPlayingUpFor > 0) {
 			--this.recordPlayingUpFor;
 		}

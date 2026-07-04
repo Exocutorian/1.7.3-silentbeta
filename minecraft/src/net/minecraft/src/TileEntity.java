@@ -12,7 +12,7 @@ public class TileEntity {
 	public int zCoord;
 	protected boolean field_31007_h;
 
-	private static void addMapping(Class var0, String var1) {
+	public static void addMapping(Class var0, String var1) {
 		if(classToNameMap.containsKey(var1)) {
 			throw new IllegalArgumentException("Duplicate id: " + var1);
 		} else {

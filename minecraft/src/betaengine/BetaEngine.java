@@ -12,7 +12,7 @@ import betaengine.mod.Mods;
  * event subscriptions — happens from mod init methods triggered here.
  */
 public final class BetaEngine {
-	public static final String VERSION = "0.3.0";
+	public static final String VERSION = "0.4.0";
 
 	private static boolean initialized = false;
 	private static boolean client = false;

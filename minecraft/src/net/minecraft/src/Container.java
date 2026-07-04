@@ -65,18 +65,7 @@ public abstract class Container {
 			} else {
 				int var10;
 				if(var3) {
-					ItemStack var7 = this.getStackInSlot(var1);
-					if(var7 != null) {
-						int var8 = var7.stackSize;
-						var5 = var7.copy();
-						Slot var9 = (Slot)this.slots.get(var1);
-						if(var9 != null && var9.getStack() != null) {
-							var10 = var9.getStack().stackSize;
-							if(var10 < var8) {
-								this.func_27280_a(var1, var2, var3, var4);
-							}
-						}
-					}
+					var5 = this.transferStackInSlot(var1);
 				} else {
 					Slot var12 = (Slot)this.slots.get(var1);
 					if(var12 != null) {
@@ -149,6 +138,88 @@ public abstract class Container {
 		}
 
 		return var5;
+	}
+
+	/**
+	 * Real shift-click: moves the clicked stack between the player inventory
+	 * and the other plain slots of this container (vanilla b1.7.3 only
+	 * re-ran the click). Special slots — crafting result/grid, armor,
+	 * furnace output — are never used as targets, so nothing can be lost.
+	 * Runs identically on client and server, keeping SMP transactions in sync.
+	 */
+	protected ItemStack transferStackInSlot(int var1) {
+		if(var1 < 0 || var1 >= this.slots.size()) {
+			return null;
+		}
+
+		Slot var2 = (Slot)this.slots.get(var1);
+		if(var2 == null || !var2.getHasStack()) {
+			return null;
+		}
+
+		ItemStack var3 = var2.getStack();
+		ItemStack var4 = var3.copy();
+		boolean var5 = var2.inventory instanceof InventoryPlayer;
+
+		for(int var6 = 0; var6 < 2 && var3.stackSize > 0; ++var6) {
+			for(int var7 = 0; var7 < this.slots.size() && var3.stackSize > 0; ++var7) {
+				Slot var8 = (Slot)this.slots.get(var7);
+				if(var7 == var1 || var8.getClass() != Slot.class) {
+					continue;
+				}
+
+				boolean var9 = var8.inventory instanceof InventoryPlayer;
+				if(var9 == var5 || var8.inventory instanceof InventoryCrafting || var8.inventory instanceof InventoryCraftResult) {
+					continue;
+				}
+
+				ItemStack var10 = var8.getStack();
+				if(var6 == 0) {
+					if(var10 == null || var10.itemID != var3.itemID || var10.getItemDamage() != var3.getItemDamage() || !var10.isStackable()) {
+						continue;
+					}
+
+					int var11 = var10.getMaxStackSize();
+					if(var11 > var8.getSlotStackLimit()) {
+						var11 = var8.getSlotStackLimit();
+					}
+
+					int var12 = var11 - var10.stackSize;
+					if(var12 > var3.stackSize) {
+						var12 = var3.stackSize;
+					}
+
+					if(var12 > 0) {
+						var10.stackSize += var12;
+						var3.stackSize -= var12;
+						var8.onSlotChanged();
+					}
+				} else if(var10 == null && var8.isItemValid(var3)) {
+					int var13 = var3.getMaxStackSize();
+					if(var13 > var8.getSlotStackLimit()) {
+						var13 = var8.getSlotStackLimit();
+					}
+
+					if(var13 > var3.stackSize) {
+						var13 = var3.stackSize;
+					}
+
+					ItemStack var14 = var3.copy();
+					var14.stackSize = var13;
+					var8.putStack(var14);
+					var3.stackSize -= var13;
+					var8.onSlotChanged();
+				}
+			}
+		}
+
+		if(var3.stackSize == 0) {
+			var2.putStack((ItemStack)null);
+		} else {
+			var2.onSlotChanged();
+		}
+
+		return var3.stackSize == var4.stackSize ? null : var4;
 	}
 
 	public void onCraftGuiClosed(EntityPlayer var1) {

@@ -1,8 +1,10 @@
-# Silent Beta 0.0.1
+# Silent Beta 0.0.2
 
 A quiet fork of Minecraft Beta 1.7.3: obsidian main menu, its own splash
-texts, copper (ore, worldgen, ingot, block, full tool tier) and obsidian
-bricks — all built on **BetaEngine**, a modding framework layer (registry
+texts, copper (ore, worldgen, ingot, block, full tool tier and a 3x3
+mining hammer), obsidian bricks, a blast-proof 54-slot Obsidian Vault,
+plus an off-hand slot (F to swap), real shift-click transfer and item
+tooltips for modded content — all built on **BetaEngine**, a modding framework layer (registry
 with automatic IDs, event bus, resource loader with texture pack support,
 mod interface) so content is added through an API instead of scattered
 vanilla edits. See [docs/betaengine.md](docs/betaengine.md).

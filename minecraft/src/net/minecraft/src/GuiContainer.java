@@ -64,7 +64,7 @@ public abstract class GuiContainer extends GuiScreen {
 		GL11.glDisable(GL11.GL_DEPTH_TEST);
 		this.drawGuiContainerForegroundLayer();
 		if(var12.getItemStack() == null && var6 != null && var6.getHasStack()) {
-			String var13 = ("" + StringTranslate.getInstance().translateNamedKey(var6.getStack().getItemName())).trim();
+			String var13 = betaengine.client.ItemNames.display(var6.getStack());
 			if(var13.length() > 0) {
 				var9 = var1 - var4 + 12;
 				var10 = var2 - var5 - 12;

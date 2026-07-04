@@ -38,6 +38,8 @@ public class ContainerPlayer extends Container {
 			this.addSlot(new Slot(var1, var3, 8 + var3 * 18, 142));
 		}
 
+		this.addSlot(new Slot(var1, 40, 77, 62));
+
 		this.onCraftMatrixChanged(this.craftMatrix);
 	}
 

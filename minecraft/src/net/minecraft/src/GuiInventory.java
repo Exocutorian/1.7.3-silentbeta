@@ -34,6 +34,7 @@ public class GuiInventory extends GuiContainer {
 		int var3 = (this.width - this.xSize) / 2;
 		int var4 = (this.height - this.ySize) / 2;
 		this.drawTexturedModalRect(var3, var4, 0, 0, this.xSize, this.ySize);
+		this.drawTexturedModalRect(var3 + 76, var4 + 61, 7, 7, 18, 18);
 		GL11.glEnable(GL12.GL_RESCALE_NORMAL);
 		GL11.glEnable(GL11.GL_COLOR_MATERIAL);
 		GL11.glPushMatrix();

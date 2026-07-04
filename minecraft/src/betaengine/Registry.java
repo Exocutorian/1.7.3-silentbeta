@@ -10,6 +10,7 @@ import net.minecraft.src.FurnaceRecipes;
 import net.minecraft.src.Item;
 import net.minecraft.src.ItemBlock;
 import net.minecraft.src.ItemStack;
+import net.minecraft.src.TileEntity;
 
 /**
  * Central registry for engine-added content.
@@ -112,6 +113,15 @@ public final class Registry {
 	/** inputId is a block ID or item shiftedIndex. */
 	public static void addSmelting(int inputId, ItemStack output) {
 		FurnaceRecipes.smelting().addSmelting(inputId, output);
+	}
+
+	/**
+	 * Registers a tile entity class under a save-format id so worlds can
+	 * persist it (TileEntity.addMapping is opened up for this).
+	 */
+	public static void registerTileEntity(Class tileEntityClass, String id) {
+		TileEntity.addMapping(tileEntityClass, id);
+		BetaEngine.log("Registered tile entity \"" + id + "\"");
 	}
 
 	public static Block getBlock(String name) {

@@ -193,6 +193,26 @@ public abstract class Minecraft implements Runnable {
 		this.serverPort = var2;
 	}
 
+	/**
+	 * Swaps the held hotbar stack with the off-hand slot. Done through
+	 * container clicks on the always-open player container (window 0), so it
+	 * stays in sync with the server in multiplayer without a new packet.
+	 */
+	private void swapOffHandItem() {
+		if(this.thePlayer == null || this.playerController == null) {
+			return;
+		}
+
+		if(this.thePlayer.inventory.getItemStack() != null) {
+			return;
+		}
+
+		int var1 = 36 + this.thePlayer.inventory.currentItem;
+		this.playerController.func_27174_a(0, 45, 0, false, this.thePlayer);
+		this.playerController.func_27174_a(0, var1, 0, false, this.thePlayer);
+		this.playerController.func_27174_a(0, 45, 0, false, this.thePlayer);
+	}
+
 	public void startGame() throws LWJGLException {
 		betaengine.client.ClientResources.install(this);
 		betaengine.BetaEngine.init();
@@ -1033,6 +1053,10 @@ public abstract class Minecraft implements Runnable {
 
 												if(Keyboard.getEventKey() == Keyboard.KEY_F1) {
 													this.gameSettings.hideGUI = !this.gameSettings.hideGUI;
+												}
+
+												if(Keyboard.getEventKey() == Keyboard.KEY_F) {
+													this.swapOffHandItem();
 												}
 
 												if(Keyboard.getEventKey() == Keyboard.KEY_F3) {

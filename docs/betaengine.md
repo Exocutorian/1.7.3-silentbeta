@@ -63,6 +63,7 @@ Registry.addShapedRecipe(new ItemStack(copperBlock),
     new Object[]{"XXX", "XXX", "XXX", 'X', copperIngot});
 Registry.addShapelessRecipe(new ItemStack(copperIngot, 9), new Object[]{copperBlock});
 Registry.addSmelting(copperOre.blockID, new ItemStack(copperIngot));
+Registry.registerTileEntity(TileEntityVault.class, "SilentVault"); // сохраняемые tile entities
 ```
 
 ## События
@@ -158,9 +159,12 @@ public class MyMod implements Mod {
 `BetaEngine.init()` (`Mods.register(new MyMod())`). Загрузка внешних папок
 `mods/` — в планах, интерфейс останется тем же.
 
-Референсный мод — `silentbeta.SilentBeta`: 3 блока, 6 предметов, новый
-тир инструментов (`EnumToolMaterial.COPPER`), 8 рецептов, плавка и
-генерация медной руды в мире через `WorldDecorateEvent`.
+Референсный мод — `silentbeta.SilentBeta`: медь (руда с worldgen, слиток,
+блок, 5 инструментов нового тира `EnumToolMaterial.COPPER` и молот,
+копающий 3×3 через `BlockBreakEvent`), обсидиановые кирпичи и
+**обсидиановый сейф** — взрывоустойчивый блок с 54 слотами на своём
+`TileEntityVault` (ванильный GUI сундука тянет 6 рядов без единого
+нового экрана).
 
 ## Точки входа в ванильном коде
 
@@ -177,8 +181,29 @@ public class MyMod implements Mod {
 Правки под Silent Beta (брендинг форка): заголовок окна и версия в
 `Minecraft.startGame`/`GuiMainMenu`/`GuiIngame` (F3), свои сплэши в
 `GuiMainMenu`, строка запуска сервера в `MinecraftServer`, публичные
-`CraftingManager.addRecipe/addShapelessRecipe`, новый член
-`EnumToolMaterial.COPPER`.
+`CraftingManager.addRecipe/addShapelessRecipe` и `TileEntity.addMapping`,
+новый член `EnumToolMaterial.COPPER`.
+
+## QoL-надстройки над ванилью
+
+- **Вторая рука.** Слот в инвентаре игрока (комбинированный индекс 40,
+  NBT-слот 150, слот контейнера 45), отображается в GUI инвентаря и на
+  HUD слева от хотбара. Клавиша **F** меняет предмет в руке и во второй
+  руке местами — свап сделан тремя кликами по всегда открытому окну
+  игрока (window 0), поэтому в мультиплеере синхронизируется штатным
+  протоколом Packet102 без новых пакетов. Рендер предмета второй руки в
+  мире — в планах.
+- **Настоящий shift-клик.** В b1.7.3 shift-клик просто повторял клик;
+  теперь `Container.transferStackInSlot` реально переносит стек между
+  инвентарём игрока и «обычными» слотами контейнера (сначала доливает
+  существующие стеки, потом занимает пустые). Спец-слоты (результат
+  крафта, броня, выход печки) целями не бывают. Логика идентична на
+  клиенте и сервере — SMP-транзакции сходятся.
+- **Тултипы для модового контента.** Ванильный тултип пустел без
+  lang-записи; теперь имена идут через `betaengine.client.ItemNames`:
+  lang-файл → registry-имя («copper_ingot» → «Copper Ingot») → ключ.
+- **Имя предмета над хотбаром** при смене выбранного слота (~2 сек),
+  как в современных версиях.
 
 ## Дорожная карта
 

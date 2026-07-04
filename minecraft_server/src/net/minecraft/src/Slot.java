@@ -1,8 +1,8 @@
 package net.minecraft.src;
 
 public class Slot {
-	private final int slotIndex;
-	private final IInventory inventory;
+	public final int slotIndex;
+	public final IInventory inventory;
 	public int id;
 	public int xDisplayPosition;
 	public int yDisplayPosition;
