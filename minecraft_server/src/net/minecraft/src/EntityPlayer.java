@@ -54,6 +54,7 @@ public abstract class EntityPlayer extends EntityLiving {
 	}
 
 	public void onUpdate() {
+		betaengine.event.EventBus.post(new betaengine.event.PlayerTickEvent(this));
 		if(this.func_22057_E()) {
 			++this.sleepTimer;
 			if(this.sleepTimer > 100) {

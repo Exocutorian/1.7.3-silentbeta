@@ -194,6 +194,7 @@ public abstract class Minecraft implements Runnable {
 	}
 
 	public void startGame() throws LWJGLException {
+		betaengine.BetaEngine.init();
 		if(this.mcCanvas != null) {
 			Graphics var1 = this.mcCanvas.getGraphics();
 			if(var1 != null) {

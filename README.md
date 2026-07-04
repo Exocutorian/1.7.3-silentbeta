@@ -1,9 +1,13 @@
 # 1.7.3-silentbeta
 
-Minecraft Beta 1.7.3 modding workspace set up with [RetroMCP-Java](https://github.com/MCPHackers/RetroMCP-Java) 1.2.
+Minecraft Beta 1.7.3 modding workspace set up with [RetroMCP-Java](https://github.com/MCPHackers/RetroMCP-Java) 1.2,
+plus **BetaEngine** — a modding framework layer (registry with automatic IDs, event bus,
+mod interface) so new content is added through an API instead of scattered vanilla edits.
+See [docs/betaengine.md](docs/betaengine.md).
 
 ## Layout
 
+- `minecraft/src/betaengine/` — BetaEngine framework (mirrored to the server tree)
 - `minecraft/src/` — decompiled, remapped client sources (edit these)
 - `minecraft_server/src/` — decompiled, remapped server sources
 - `conf/` — RetroMCP mappings and patches for b1.7.3

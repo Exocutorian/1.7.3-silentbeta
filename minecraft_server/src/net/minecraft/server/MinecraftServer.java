@@ -66,6 +66,7 @@ public class MinecraftServer implements Runnable, ICommandListener {
 	}
 
 	private boolean startServer() throws UnknownHostException {
+		betaengine.BetaEngine.init();
 		this.commandHandler = new ConsoleCommandHandler(this);
 		ThreadCommandReader var1 = new ThreadCommandReader(this);
 		var1.setDaemon(true);

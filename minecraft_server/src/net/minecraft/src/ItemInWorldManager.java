@@ -92,6 +92,11 @@ public class ItemInWorldManager {
 	public boolean func_325_c(int var1, int var2, int var3) {
 		int var4 = this.thisWorld.getBlockId(var1, var2, var3);
 		int var5 = this.thisWorld.getBlockMetadata(var1, var2, var3);
+		if(betaengine.event.EventBus.post(new betaengine.event.BlockBreakEvent(this.thisWorld, this.thisPlayer, var1, var2, var3, var4, var5)).isCancelled()) {
+			((EntityPlayerMP)this.thisPlayer).playerNetServerHandler.sendPacket(new Packet53BlockChange(var1, var2, var3, this.thisWorld));
+			return false;
+		}
+
 		this.thisWorld.func_28101_a(this.thisPlayer, 2001, var1, var2, var3, var4 + this.thisWorld.getBlockMetadata(var1, var2, var3) * 256);
 		boolean var6 = this.removeBlock(var1, var2, var3);
 		ItemStack var7 = this.thisPlayer.getCurrentEquippedItem();

@@ -22,6 +22,10 @@ public class PlayerControllerSP extends PlayerController {
 	public boolean sendBlockRemoved(int var1, int var2, int var3, int var4) {
 		int var5 = this.mc.theWorld.getBlockId(var1, var2, var3);
 		int var6 = this.mc.theWorld.getBlockMetadata(var1, var2, var3);
+		if(betaengine.event.EventBus.post(new betaengine.event.BlockBreakEvent(this.mc.theWorld, this.mc.thePlayer, var1, var2, var3, var5, var6)).isCancelled()) {
+			return false;
+		}
+
 		boolean var7 = super.sendBlockRemoved(var1, var2, var3, var4);
 		ItemStack var8 = this.mc.thePlayer.getCurrentEquippedItem();
 		boolean var9 = this.mc.thePlayer.canHarvestBlock(Block.blocksList[var5]);
