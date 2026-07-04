@@ -7,12 +7,17 @@ minecraft/bin/
 minecraft/jars/
 minecraft/md5/
 minecraft/src_original/
-minecraft/game/
+minecraft/game/*
+!minecraft/game/.gitkeep
 minecraft_server/bin/
 minecraft_server/jars/
 minecraft_server/md5/
 minecraft_server/src_original/
-minecraft_server/game/
+minecraft_server/game/*
+!minecraft_server/game/.gitkeep
 
 # RetroMCP tool jar, if dropped into the workspace
 RetroMCP*.jar
+
+# RetroMCP settings hold machine-specific absolute paths — regenerated on run
+/options.cfg
