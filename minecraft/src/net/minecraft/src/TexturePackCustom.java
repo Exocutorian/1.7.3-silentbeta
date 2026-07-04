@@ -112,14 +112,20 @@ public class TexturePackCustom extends TexturePackBase {
 	}
 
 	public InputStream getResourceAsStream(String var1) {
+		InputStream var4 = null;
+
 		try {
 			ZipEntry var2 = this.texturePackZipFile.getEntry(var1.substring(1));
 			if(var2 != null) {
-				return this.texturePackZipFile.getInputStream(var2);
+				var4 = this.texturePackZipFile.getInputStream(var2);
 			}
 		} catch (Exception var3) {
 		}
 
-		return TexturePackBase.class.getResourceAsStream(var1);
+		if(var4 == null) {
+			var4 = TexturePackBase.class.getResourceAsStream(var1);
+		}
+
+		return betaengine.client.ClientResources.wrapResource(var1, var4);
 	}
 }

@@ -26,6 +26,6 @@ public abstract class TexturePackBase {
 	}
 
 	public InputStream getResourceAsStream(String var1) {
-		return TexturePackBase.class.getResourceAsStream(var1);
+		return betaengine.client.ClientResources.wrapResource(var1, TexturePackBase.class.getResourceAsStream(var1));
 	}
 }
