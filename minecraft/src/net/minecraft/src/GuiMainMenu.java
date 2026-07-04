@@ -24,7 +24,11 @@ public class GuiMainMenu extends GuiScreen {
 			while(true) {
 				var3 = var2.readLine();
 				if(var3 == null) {
-					this.splashText = (String)var1.get(rand.nextInt(var1.size()));
+					if(rand.nextBoolean() && silentbeta.SilentBeta.SPLASHES.length > 0) {
+						this.splashText = silentbeta.SilentBeta.SPLASHES[rand.nextInt(silentbeta.SilentBeta.SPLASHES.length)];
+					} else {
+						this.splashText = (String)var1.get(rand.nextInt(var1.size()));
+					}
 					break;
 				}
 
@@ -118,7 +122,7 @@ public class GuiMainMenu extends GuiScreen {
 		GL11.glScalef(var8, var8, var8);
 		this.drawCenteredString(this.fontRenderer, this.splashText, 0, -8, 16776960);
 		GL11.glPopMatrix();
-		this.drawString(this.fontRenderer, "Minecraft Beta 1.7.3", 2, 2, 5263440);
+		this.drawString(this.fontRenderer, silentbeta.SilentBeta.DISPLAY + " (b1.7.3 core)", 2, 2, 5263440);
 		String var9 = "Copyright Mojang AB. Do not distribute.";
 		this.drawString(this.fontRenderer, var9, this.width - this.fontRenderer.getStringWidth(var9) - 2, this.height - 10, 16777215);
 		super.drawScreen(var1, var2, var3);

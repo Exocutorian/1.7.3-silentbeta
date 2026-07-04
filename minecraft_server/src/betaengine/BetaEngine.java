@@ -2,7 +2,6 @@ package betaengine;
 
 import betaengine.event.EngineInitEvent;
 import betaengine.event.EventBus;
-import betaengine.example.ExampleMod;
 import betaengine.mod.Mods;
 
 /**
@@ -13,7 +12,7 @@ import betaengine.mod.Mods;
  * event subscriptions — happens from mod init methods triggered here.
  */
 public final class BetaEngine {
-	public static final String VERSION = "0.2.0";
+	public static final String VERSION = "0.3.0";
 
 	private static boolean initialized = false;
 	private static boolean client = false;
@@ -30,7 +29,7 @@ public final class BetaEngine {
 		client = detectClient();
 		log("BetaEngine " + VERSION + " starting on " + (client ? "client" : "server"));
 
-		Mods.register(new ExampleMod());
+		Mods.register(new silentbeta.SilentBeta());
 		Mods.initAll();
 
 		EventBus.post(new EngineInitEvent());

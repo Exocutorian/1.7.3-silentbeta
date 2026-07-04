@@ -5,8 +5,11 @@ import java.util.HashMap;
 import java.util.Map;
 
 import net.minecraft.src.Block;
+import net.minecraft.src.CraftingManager;
+import net.minecraft.src.FurnaceRecipes;
 import net.minecraft.src.Item;
 import net.minecraft.src.ItemBlock;
+import net.minecraft.src.ItemStack;
 
 /**
  * Central registry for engine-added content.
@@ -92,6 +95,23 @@ public final class Registry {
 		itemNames.put(item, name);
 		BetaEngine.log("Registered item \"" + name + "\" -> index " + index);
 		return item;
+	}
+
+	/**
+	 * Shaped recipe, vanilla pattern syntax:
+	 * addShapedRecipe(new ItemStack(out), new Object[]{"XX", "XX", 'X', in})
+	 */
+	public static void addShapedRecipe(ItemStack result, Object[] pattern) {
+		CraftingManager.getInstance().addRecipe(result, pattern);
+	}
+
+	public static void addShapelessRecipe(ItemStack result, Object[] ingredients) {
+		CraftingManager.getInstance().addShapelessRecipe(result, ingredients);
+	}
+
+	/** inputId is a block ID or item shiftedIndex. */
+	public static void addSmelting(int inputId, ItemStack output) {
+		FurnaceRecipes.smelting().addSmelting(inputId, output);
 	}
 
 	public static Block getBlock(String name) {

@@ -220,7 +220,7 @@ public abstract class Minecraft implements Runnable {
 			Display.setDisplayMode(new DisplayMode(this.displayWidth, this.displayHeight));
 		}
 
-		Display.setTitle("Minecraft Minecraft Beta 1.7.3");
+		Display.setTitle(silentbeta.SilentBeta.DISPLAY);
 
 		try {
 			Display.create();

@@ -599,6 +599,7 @@ public class ChunkProviderGenerate implements IChunkProvider {
 			}
 		}
 
+		betaengine.event.EventBus.post(new betaengine.event.WorldDecorateEvent(this.worldObj, var2, var3, this.rand));
 		BlockSand.fallInstantly = false;
 	}
 

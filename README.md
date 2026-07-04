@@ -1,13 +1,18 @@
-# 1.7.3-silentbeta
+# Silent Beta 0.0.1
 
-Minecraft Beta 1.7.3 modding workspace set up with [RetroMCP-Java](https://github.com/MCPHackers/RetroMCP-Java) 1.2,
-plus **BetaEngine** — a modding framework layer (registry with automatic IDs, event bus,
-mod interface) so new content is added through an API instead of scattered vanilla edits.
-See [docs/betaengine.md](docs/betaengine.md).
+A quiet fork of Minecraft Beta 1.7.3: obsidian main menu, its own splash
+texts, copper (ore, worldgen, ingot, block, full tool tier) and obsidian
+bricks — all built on **BetaEngine**, a modding framework layer (registry
+with automatic IDs, event bus, resource loader with texture pack support,
+mod interface) so content is added through an API instead of scattered
+vanilla edits. See [docs/betaengine.md](docs/betaengine.md).
+
+Workspace set up with [RetroMCP-Java](https://github.com/MCPHackers/RetroMCP-Java) 1.2.
 
 ## Layout
 
 - `minecraft/src/betaengine/` — BetaEngine framework (mirrored to the server tree)
+- `minecraft/src/silentbeta/` — Silent Beta content mod (mirrored too)
 - `minecraft/src/` — decompiled, remapped client sources (edit these)
 - `minecraft_server/src/` — decompiled, remapped server sources
 - `conf/` — RetroMCP mappings and patches for b1.7.3

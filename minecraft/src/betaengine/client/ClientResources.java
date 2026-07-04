@@ -38,6 +38,8 @@ public final class ClientResources {
 	private static Minecraft mc = null;
 	private static TextureStitcher terrain = null;
 	private static TextureStitcher items = null;
+	/** vanilla resource path -> engine resource path ("/betaengine/textures/...") */
+	private static final java.util.TreeMap fileOverrides = new java.util.TreeMap();
 
 	private ClientResources() {
 	}
@@ -66,6 +68,11 @@ public final class ClientResources {
 			public int itemTexture(String name) {
 				return items.allocate(name);
 			}
+
+			public void overrideTexture(String vanillaPath, String textureRelPath) {
+				fileOverrides.put(vanillaPath, "/betaengine/textures/" + textureRelPath + ".png");
+				BetaEngine.log("Texture override: " + vanillaPath + " -> " + textureRelPath);
+			}
 		});
 
 		BetaEngine.log("Client resource loader installed");
@@ -76,6 +83,20 @@ public final class ClientResources {
 	 * Non-atlas resources pass through untouched.
 	 */
 	public static InputStream wrapResource(String name, InputStream vanilla) {
+		String overridePath = (String)fileOverrides.get(name);
+		if(overridePath != null) {
+			InputStream replaced = engineResolver().resolve(overridePath);
+			if(replaced != null) {
+				if(vanilla != null) {
+					try {
+						vanilla.close();
+					} catch (IOException e) {
+					}
+				}
+				return replaced;
+			}
+		}
+
 		TextureStitcher stitcher = stitcherFor(name);
 		if(stitcher == null || vanilla == null) {
 			return vanilla;

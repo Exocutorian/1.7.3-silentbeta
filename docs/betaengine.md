@@ -6,27 +6,28 @@
 ```
 Game
  ├── Vanilla            net/minecraft/** (декомпилированный код игры)
- └── BetaEngine         betaengine/**
-      ├── BetaEngine    точка входа, инициализация
-      ├── Registry      регистрация блоков/предметов, авто-ID
-      ├── Textures      фасад ресурс-лоадера (авто-ячейки атласов)
-      ├── event/        EventBus + события игры
-      ├── mod/          интерфейс Mod и загрузчик
-      ├── client/       ТОЛЬКО клиент: сшивка атласов, ресурс-паки
-      ├── textures/     PNG-текстуры движка/модов (только клиент)
-      └── example/      референсный мод (медный блок и слиток)
+ ├── BetaEngine         betaengine/**  — движок, контент-агностичный
+ │    ├── BetaEngine    точка входа, инициализация
+ │    ├── Registry      блоки/предметы (авто-ID), рецепты, плавка
+ │    ├── Textures      фасад ресурс-лоадера (атласы + подмена файлов)
+ │    ├── event/        EventBus + события игры
+ │    ├── mod/          интерфейс Mod и загрузчик
+ │    ├── client/       ТОЛЬКО клиент: сшивка атласов, ресурс-паки
+ │    └── textures/     PNG-ресурсы (только клиент)
+ └── Silent Beta        silentbeta/**  — контент форка (референс API)
 ```
 
-Код движка (кроме `client/` и `textures/`) идентичен в
-`minecraft/src/betaengine` и `minecraft_server/src/betaengine` — сторона
-определяется в рантайме. При изменении правьте клиентскую копию и
-синхронизируйте:
+Код движка и контента (кроме `betaengine/client/` и `betaengine/textures/`)
+идентичен в обоих деревьях — сторона определяется в рантайме. При изменении
+правьте клиентскую копию и синхронизируйте:
 
 ```sh
-rm -rf minecraft_server/src/betaengine && mkdir -p minecraft_server/src/betaengine && \
-  (cd minecraft/src/betaengine && find . -name '*.java' -not -path './client/*' | \
-   while read f; do mkdir -p "../../../minecraft_server/src/betaengine/$(dirname "$f")"; \
-   cp "$f" "../../../minecraft_server/src/betaengine/$f"; done)
+for pkg in betaengine silentbeta; do
+  rm -rf minecraft_server/src/$pkg && mkdir -p minecraft_server/src/$pkg
+  (cd minecraft/src/$pkg && find . -name '*.java' -not -path './client/*' | \
+   while read f; do mkdir -p "../../../minecraft_server/src/$pkg/$(dirname "$f")"; \
+   cp "$f" "../../../minecraft_server/src/$pkg/$f"; done)
+done
 ```
 
 ## Registry
@@ -55,6 +56,15 @@ Item hammer = Registry.registerItem("hammer", new Registry.ItemFactory() {
 - Строковое имя (`[a-z0-9_]+`) — стабильная идентичность контента;
   `Registry.getBlock("copper_block")`, `Registry.nameOf(block)`.
 
+Рецепты и плавка (обёртки над ванильными менеджерами):
+
+```java
+Registry.addShapedRecipe(new ItemStack(copperBlock),
+    new Object[]{"XXX", "XXX", "XXX", 'X', copperIngot});
+Registry.addShapelessRecipe(new ItemStack(copperIngot, 9), new Object[]{copperBlock});
+Registry.addSmelting(copperOre.blockID, new ItemStack(copperIngot));
+```
+
 ## События
 
 `EventBus` — статическая шина. Диспатч идёт по иерархии классов: подписка на
@@ -77,6 +87,7 @@ EventBus.subscribe(BlockBreakEvent.class, new EventHandler() {
 | `EngineInitEvent` | после init всех модов | нет |
 | `BlockBreakEvent` | клиент `PlayerControllerSP.sendBlockRemoved`, сервер `ItemInWorldManager.func_325_c` | да |
 | `PlayerTickEvent` | `EntityPlayer.onUpdate` (обе стороны) | нет |
+| `WorldDecorateEvent` | `ChunkProviderGenerate.populate` после ванильной декорации чанка (worldgen для модов) | нет |
 
 ## Resource Loader
 
@@ -109,6 +120,14 @@ this.setIconIndex(Textures.item("copper_ingot"));
 Если файл не найден нигде — в ячейку рисуется пурпурно-чёрная «missing
 texture», игра не падает.
 
+Помимо атласов можно подменить целый ванильный файл:
+
+```java
+Textures.override("/gui/background.png", "gui/background");
+// теперь фон меню берётся из betaengine/textures/gui/background.png
+// (та же цепочка поиска: resources/ -> текстур-пак -> classpath)
+```
+
 Врезка одна: `TexturePackBase/TexturePackCustom.getResourceAsStream` —
 через неё проходят и первая загрузка, и `refreshTextures`. На сервере
 `Textures.*` возвращает 0 (индексы текстур не сохраняются и не ходят по
@@ -139,6 +158,10 @@ public class MyMod implements Mod {
 `BetaEngine.init()` (`Mods.register(new MyMod())`). Загрузка внешних папок
 `mods/` — в планах, интерфейс останется тем же.
 
+Референсный мод — `silentbeta.SilentBeta`: 3 блока, 6 предметов, новый
+тир инструментов (`EnumToolMaterial.COPPER`), 8 рецептов, плавка и
+генерация медной руды в мире через `WorldDecorateEvent`.
+
 ## Точки входа в ванильном коде
 
 Весь движок цепляется к игре через минимум правок:
@@ -148,7 +171,14 @@ public class MyMod implements Mod {
 - `PlayerControllerSP.sendBlockRemoved`, `ItemInWorldManager.func_325_c` → `BlockBreakEvent`
 - `EntityPlayer.onUpdate` (обе стороны) → `PlayerTickEvent`
 - `Minecraft.startGame` → `ClientResources.install(this)` (до `init()`)
-- `TexturePackBase/TexturePackCustom.getResourceAsStream` → сшивка атласов
+- `TexturePackBase/TexturePackCustom.getResourceAsStream` → сшивка атласов и подмена файлов
+- `ChunkProviderGenerate.populate` (обе стороны) → `WorldDecorateEvent`
+
+Правки под Silent Beta (брендинг форка): заголовок окна и версия в
+`Minecraft.startGame`/`GuiMainMenu`/`GuiIngame` (F3), свои сплэши в
+`GuiMainMenu`, строка запуска сервера в `MinecraftServer`, публичные
+`CraftingManager.addRecipe/addShapelessRecipe`, новый член
+`EnumToolMaterial.COPPER`.
 
 ## Дорожная карта
 

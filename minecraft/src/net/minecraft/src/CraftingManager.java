@@ -82,7 +82,7 @@ public class CraftingManager {
 		System.out.println(this.recipes.size() + " recipes");
 	}
 
-	void addRecipe(ItemStack var1, Object... var2) {
+	public void addRecipe(ItemStack var1, Object... var2) {
 		String var3 = "";
 		int var4 = 0;
 		int var5 = 0;
@@ -134,7 +134,7 @@ public class CraftingManager {
 		this.recipes.add(new ShapedRecipes(var5, var6, var14, var1));
 	}
 
-	void addShapelessRecipe(ItemStack var1, Object... var2) {
+	public void addShapelessRecipe(ItemStack var1, Object... var2) {
 		ArrayList var3 = new ArrayList();
 		Object[] var4 = var2;
 		int var5 = var2.length;

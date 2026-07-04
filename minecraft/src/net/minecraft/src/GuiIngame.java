@@ -170,7 +170,7 @@ public class GuiIngame extends Gui {
 				GL11.glTranslatef(0.0F, 32.0F, 0.0F);
 			}
 
-			var8.drawStringWithShadow("Minecraft Beta 1.7.3 (" + this.mc.debug + ")", 2, 2, 16777215);
+			var8.drawStringWithShadow(silentbeta.SilentBeta.DISPLAY + " (" + this.mc.debug + ")", 2, 2, 16777215);
 			var8.drawStringWithShadow(this.mc.func_6241_m(), 2, 12, 16777215);
 			var8.drawStringWithShadow(this.mc.func_6262_n(), 2, 22, 16777215);
 			var8.drawStringWithShadow(this.mc.func_6245_o(), 2, 32, 16777215);

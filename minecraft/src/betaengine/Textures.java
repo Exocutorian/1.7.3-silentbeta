@@ -20,6 +20,8 @@ public final class Textures {
 		int blockTexture(String name);
 
 		int itemTexture(String name);
+
+		void overrideTexture(String vanillaPath, String textureRelPath);
 	}
 
 	private static Allocator allocator = null;
@@ -39,5 +41,18 @@ public final class Textures {
 	/** Atlas index in /gui/items.png for betaengine/textures/items/&lt;name&gt;.png */
 	public static int item(String name) {
 		return allocator == null ? 0 : allocator.itemTexture(name);
+	}
+
+	/**
+	 * Replaces a whole vanilla texture file with an engine one, e.g.
+	 * override("/gui/background.png", "gui/background") serves
+	 * betaengine/textures/gui/background.png instead of the vanilla file.
+	 * Same lookup order as stitched textures (resources/ dir, texture pack,
+	 * classpath), so packs can re-skin the replacement. No-op on the server.
+	 */
+	public static void override(String vanillaPath, String textureRelPath) {
+		if(allocator != null) {
+			allocator.overrideTexture(vanillaPath, textureRelPath);
+		}
 	}
 }
